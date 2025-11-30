@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>LCUE — Test Timer</title>
+<link href="https://fonts.googleapis.com/css2?family=Silkscreen&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet">
+
+<style>
+/* ================= GLOBAL SKIN ================= */
+body {
+  margin: 0;
+  padding: 40px 20px;
+  text-align: center;
+  font-family: 'Bebas Neue', monospace;
+  background-image: url("https://i.imgur.com/WBRj4vv.png");
+  color: #4a3b2a;
+  position: relative;
+}
+
+/* subtle paper texture */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: url("https://i.imgur.com/WBRj4vv.png");
+  opacity: 0.25;
+  pointer-events: none;
+  mix-blend-mode: multiply;
+  z-index: -1;
+}
+
+h1 {
+  font-size: 42px;
+  margin-bottom: 8px;
+  text-shadow: 0 0 3px #d7b27c, 0 0 6px #b28952;
+  animation: amberPulse 4s infinite alternate ease-in-out;
+}
+
+@keyframes amberPulse {
+  from { text-shadow: 0 0 1px #b99263; }
+  to   { text-shadow: 0 0 6px #5e4a32; }
+}
+
+.subtitle {
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+/* ================= PANEL ================= */
+.panel {
+  max-width: 600px;
+  margin: 0 auto;
+  background: #fffaf3;
+  border: 2px solid #5a4735;
+  border-radius: 10px;
+  padding: 20px 30px;
+  box-shadow: 0px 4px 0px #c9b69a inset;
+  position: relative;
+  z-index: 2;
+}
+
+/* TIMER DISPLAY */
+#display {
+  font-size: 64px;
+  margin: 25px 0;
+  color: #4a3b2a;
+  text-shadow: 0 2px #c9b69a;
+}
+
+/* INPUTS */
+.time-input {
+  width: 60px;
+  padding: 8px;
+  font-size: 20px;
+  font-family:  'Bebas Neue', monospace;;
+  text-align: center;
+  border: 2px solid #5a4735;
+  border-radius: 6px;
+  background: #efe2cf;
+  color: #4a3b2a;
+  outline: none;
+}
+
+/* BUTTONS */
+button {
+  padding: 10px 24px;
+  font-size: 15px;
+  font-family:  'Bebas Neue', monospace;;
+  cursor: pointer;
+  background-color: #efe2cf;
+  color: #4a3b2a;
+  border: 2px solid #5a4735;
+  border-radius: 6px;
+  box-shadow: 0 3px #c0ab8d;
+  margin: 6px;
+}
+
+button:hover {
+  background-color: #e6d4bd;
+}
+
+button:active {
+  transform: translateY(2px);
+  box-shadow: 0 1px #c0ab8d;
+}
+
+.footer {
+  margin-top: 24px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* RULES PANEL ANIMATION */
+.rules-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.rules-content.open {
+  max-height: 300px; /* Enough room for rules */
+  max-width: 600px; /* Enough room for rules */
+}
+
+/* ========== GRID LAYOUT ========== */
+.lcue-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 26px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* stack on phone screens */
+@media (max-width: 800px) {
+  .lcue-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.right-column {
+  display: flex;
+  flex-direction: column;
+  gap: 26px;
+}
+
+
+</style>
+</head>
+
+<body>
+<h1>LCUE — Test Timer</h1>
+<div class="subtitle">Weekly Testing Timer</div>
+
+<div class="panel">
+
+<!-- ======== GRID LAYOUT ======== -->
+<div class="lcue-grid">
+
+  <!-- LEFT COLUMN: TIMER -->
+  <div class="panel">
+    <div>
+      <input id="minutes" class="time-input" type="number" min="0" placeholder="MM">
+      :
+      <input id="seconds" class="time-input" type="number" min="0" max="59" placeholder="SS">
+    </div>
+
+    <div id="display">00:00</div>
+
+<p> Please complete the student survey when you finish :-)</p>
+
+        <img id="qrImage"
+             src="https://i.imgur.com/WqG4mbt.png"
+             alt="QR Code"
+             style="max-width:220px; border-radius:6px;">
+  </div>
+
+
+  <!-- RIGHT COLUMN -->
+  <div class="right-column">
+
+    <!-- RULES PANEL -->
+    <div class="panel">
+      <h2 style="margin-top:0; font-size:12px;">Test Rules</h2>
+      <div class="rules-content" id="rulesContent">
+        <p style="font-size:22px; text-align:left; line-height:1.4;">
+          • Phones on silent and in bags.<br>
+          • No smartwatches.<br>
+          • Books away.<br>
+          • Separate if possible.<br>
+          • Check answers and writing.<br>
+          • You have 1hr and 20 mins.<br>
+          • Please stay for answers.<br>
+          • Happy Birthday Latif!<br>
+          • Farewell to Gadiel!
+<br>
+        </p>
+      </div>
+      <button onclick="toggleRules()" style="margin-top:12px;">Show / Hide Messages</button>
+    </div>
+
+    <div>
+      <button onclick="startTimer()">Start</button>
+      <button onclick="pauseTimer()">Pause</button>
+      <button onclick="resetTimer()">Reset</button>
+    </div>
+
+  </div>
+</div>
+
+<div class="footer">© 2025 LCUE Suite</div>
+
+<script>
+let interval = null;
+let remaining = 0;
+let paused = false;
+
+function format(n) {
+  return String(n).padStart(2, '0');
+}
+
+function updateDisplay() {
+  const m = Math.floor(remaining / 60);
+  const s = remaining % 60;
+  document.getElementById("display").textContent = `${format(m)}:${format(s)}`;
+}
+
+function startTimer() {
+  if (!paused) {
+    const min = parseInt(document.getElementById("minutes").value || "0", 10);
+    const sec = parseInt(document.getElementById("seconds").value || "0", 10);
+    remaining = min * 60 + sec;
+  }
+
+  paused = false;
+  clearInterval(interval);
+  interval = setInterval(() => {
+    if (remaining > 0) {
+      remaining--;
+      updateDisplay();
+    } else {
+      clearInterval(interval);
+      updateDisplay();
+    }
+  }, 1000);
+}
+
+function pauseTimer() {
+  paused = true;
+  clearInterval(interval);
+}
+
+function resetTimer() {
+  paused = false;
+  clearInterval(interval);
+  remaining = 0;
+  updateDisplay();
+}
+
+function toggleRules() {
+  const content = document.getElementById("rulesContent");
+  content.classList.toggle("open");
+}
+
+</script>
+
+</body>
+</html>
